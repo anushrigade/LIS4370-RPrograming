@@ -15,15 +15,44 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-summary(cars)
+# Add your library below.
+library(ggplot2)
+
+mtc <- mtcars
+
+#1. Histogram of mpg
+hist <- ggplot(mtc, aes(x=mpg)) + geom_histogram(binwidth=2, color="black", fill="white")
+mpg_hist <- hist + ggtitle("mpg histogram") + theme(plot.title = element_text(hjust = 0.5))
+mpg_hist
+
+#2. Boxplots of mpg by cyl:
+#all cars with 4, 6, and 8 cylinders
+box_cyl <- ggplot(mtc, aes(x=factor(cyl), y=mpg)) + geom_boxplot() +
+          xlab("no. of cylinders") + ggtitle("mpg by cyl") + theme(plot.title = element_text(hjust = 0.5))
+box_cyl
+
+#3. Multiline chart of wt and mpg
+mtc$am <- as.factor(mtc$am)
+multiline <- ggplot(mtc, aes(x=wt, group=am, color=am)) + geom_line(aes(y=mpg)) +
+              xlab("weight") + ggtitle("mpg vs. weight by am") + 
+              theme(plot.title = element_text(hjust = 0.5))
+multiline
+
+#4. Barchart of weight by car
+car.names <- rownames(mtc)
+barchart <- ggplot(mtc, aes(x=car.names, y=wt)) + geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
+  ggtitle("weight by car") + theme(plot.title = element_text(hjust = 0.5))
+barchart
+
+#5. Scatter chart of wt vs. mpg
+scatter <- ggplot(mtc, aes(x=mpg, y=wt)) + geom_point(aes(size=qsec, color=qsec)) +
+          geom_text(aes(label=car.names), size=2)
+scatter
+
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
